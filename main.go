@@ -31,6 +31,11 @@ func main() {
 			Usage: "Load configuration from `FILE`",
 			Value: ".goreleaser.yml",
 		},
+		cli.StringSliceFlag{
+			Name:  "extra-config, e",
+			Usage: "Override configuration file using JSON",
+			Value: &cli.StringSlice{},
+		},
 		cli.StringFlag{
 			Name:  "release-notes",
 			Usage: "Load custom release notes from a markdown `FILE`",

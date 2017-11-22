@@ -46,6 +46,7 @@ var pipes = []pipeline.Pipe{
 type Flags interface {
 	IsSet(s string) bool
 	String(s string) string
+	StringSlice(s string) []string
 	Int(s string) int
 	Bool(s string) bool
 }
@@ -54,10 +55,17 @@ type Flags interface {
 func Release(flags Flags) error {
 	var file = getConfigFile(flags)
 	var notes = flags.String("release-notes")
+	var configOverrides = flags.StringSlice("extra-config")
 	if flags.Bool("debug") {
 		log.SetLevel(log.DebugLevel)
 	}
 	cfg, err := config.Load(file)
+	for _, configOverride := range configOverrides {
+		if err := config.Override(&cfg, configOverride); err != nil {
+			log.WithField("extra-config", configOverride).Debugf("config override failed")
+		}
+		log.WithField("extra-config", configOverride).Debug("config override successful")
+	}
 	if err != nil {
 		// Allow file not found errors if config file was not
 		// explicitly specified

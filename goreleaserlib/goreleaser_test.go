@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/goreleaser/goreleaser/config"
@@ -26,6 +27,7 @@ func TestRelease(t *testing.T) {
 			"skip-validate": "true",
 			"debug":         "true",
 			"parallelism":   "4",
+			"extra-config":  "{ \"release\": { \"prerelease\": true } }",
 		},
 	}
 	assert.NoError(t, Release(flags))
@@ -167,6 +169,10 @@ func (f fakeFlags) Int(s string) int {
 
 func (f fakeFlags) Bool(s string) bool {
 	return f.flags[s] == "true"
+}
+
+func (f fakeFlags) StringSlice(s string) []string {
+	return strings.Split(f.flags[s], "} {")
 }
 
 func setup(t *testing.T) (current string, back func()) {

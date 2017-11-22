@@ -238,6 +238,11 @@ type Project struct {
 	XXX map[string]interface{} `yaml:",inline"`
 }
 
+// Override override a project with YAML string. The project and YAML will be merged.
+func Override(config *Project, overrideConfig string) (err error) {
+	return yaml.Unmarshal([]byte(overrideConfig), config)
+}
+
 // Load config file
 func Load(file string) (config Project, err error) {
 	f, err := os.Open(file)

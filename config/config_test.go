@@ -66,3 +66,13 @@ func TestInvalidYaml(t *testing.T) {
 	_, err := Load("testdata/invalid.yml")
 	assert.EqualError(t, err, "yaml: line 1: did not find expected node content")
 }
+
+func TestOverride(t *testing.T) {
+	proj := Project{
+		ProjectName: "myproject",
+	}
+	if err := Override(&proj, "{ \"project_name\": \"anotherproject\" }"); err != nil {
+		assert.NoError(t, err)
+	}
+	assert.Equal(t, proj.ProjectName, "anotherproject")
+}
